@@ -38,7 +38,6 @@ ignore:
   - "src/main/java/org/springframework/core/ParameterNameDiscoverer.java"
   - "src/main/java/org/springframework/core/PriorityOrdered.java"
   - "src/main/java/org/springframework/core/ResolvableType.java"
-  - "src/main/java/org/springframework/core/ResolvableTypeProvider.java"
   - "src/main/java/org/springframework/core/SerializableTypeWrapper.java"
   - "src/main/java/org/springframework/lang/NonNullApi.java"
   - "src/main/java/org/springframework/lang/NonNullFields.java"

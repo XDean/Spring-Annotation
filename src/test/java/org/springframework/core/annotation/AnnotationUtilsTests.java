@@ -16,6 +16,13 @@
 
 package org.springframework.core.annotation;
 
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.springframework.core.annotation.AnnotationUtils.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Repeatable;
@@ -33,18 +40,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.subpackage.NonPublicAnnotatedClass;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
-
-import static java.util.Arrays.*;
-import static java.util.stream.Collectors.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.springframework.core.annotation.AnnotationUtils.*;
 
 /**
  * Unit tests for {@link AnnotationUtils}.
@@ -77,9 +76,9 @@ public class AnnotationUtilsTests {
 	}
 
 	static Map<?, ?> getCache(String cacheName) {
-		Field field = ReflectionUtils.findField(AnnotationUtils.class, cacheName);
-		ReflectionUtils.makeAccessible(field);
-		return (Map<?, ?>) ReflectionUtils.getField(field, null);
+		Field field = Util.findField(AnnotationUtils.class, cacheName);
+		Util.makeAccessible(field);
+		return (Map<?, ?>) Util.getField(field, null);
 	}
 
 

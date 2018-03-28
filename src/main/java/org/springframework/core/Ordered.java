@@ -46,7 +46,7 @@ public interface Ordered {
 	 * Useful constant for the highest precedence value.
 	 * @see java.lang.Integer#MIN_VALUE
 	 */
-	int HIGHEST_PRECEDENCE = Integer.MIN_VALUE;
+	int HIGHEST_PRECEDENCE = Integer.MIN_VALUE; // NO_UCD (unused code)
 
 	/**
 	 * Useful constant for the lowest precedence value.

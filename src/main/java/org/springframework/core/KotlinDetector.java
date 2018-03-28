@@ -48,13 +48,6 @@ public abstract class KotlinDetector {
 
 
 	/**
-	 * Determine whether Kotlin is present in general.
-	 */
-	public static boolean isKotlinPresent() {
-		return (kotlinMetadata != null);
-	}
-
-	/**
 	 * Determine whether the given {@code Class} is a Kotlin type
 	 * (with Kotlin metadata present on it).
 	 */

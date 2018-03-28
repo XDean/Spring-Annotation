@@ -72,19 +72,4 @@ public abstract class NestedExceptionUtils {
 		}
 		return rootCause;
 	}
-
-	/**
-	 * Retrieve the most specific cause of the given exception, that is,
-	 * either the innermost cause (root cause) or the exception itself.
-	 * <p>Differs from {@link #getRootCause} in that it falls back
-	 * to the original exception if there is no root cause.
-	 * @param original the original exception to introspect
-	 * @return the most specific cause (never {@code null})
-	 * @since 4.3.9
-	 */
-	public static Throwable getMostSpecificCause(Throwable original) {
-		Throwable rootCause = getRootCause(original);
-		return (rootCause != null ? rootCause : original);
-	}
-
 }

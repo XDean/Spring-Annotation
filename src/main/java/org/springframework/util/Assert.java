@@ -152,25 +152,6 @@ public abstract class Assert {
   }
 
   /**
-   * Assert that the given String is not empty; that is, it must not be {@code null} and not the
-   * empty String.
-   *
-   * <pre class="code">
-   * Assert.hasLength(name, "Name must not be empty");
-   * </pre>
-   *
-   * @param text the String to check
-   * @param message the exception message to use if the assertion fails
-   * @see StringUtils#hasLength
-   * @throws IllegalArgumentException if the text is empty
-   */
-  public static void hasLength(@Nullable String text, String message) {
-    if (!StringUtils.hasLength(text)) {
-      throw new IllegalArgumentException(message);
-    }
-  }
-
-  /**
    * Assert that the given String contains valid text content; that is, it must not be {@code null}
    * and must contain at least one non-whitespace character.
    *
@@ -189,58 +170,8 @@ public abstract class Assert {
     }
   }
 
-  /**
-   * Assert that the provided object is an instance of the provided class.
-   *
-   * <pre class="code">
-   * Assert.instanceOf(Foo.class, foo, "Foo expected");
-   * </pre>
-   *
-   * @param type the type to check against
-   * @param obj the object to check
-   * @param message a message which will be prepended to provide further context. If it is empty or
-   *          ends in ":" or ";" or "," or ".", a full exception message will be appended. If it
-   *          ends in a space, the name of the offending object's type will be appended. In any
-   *          other case, a ":" with a space and the name of the offending object's type will be
-   *          appended.
-   * @throws IllegalArgumentException if the object is not an instance of type
-   */
-  public static void isInstanceOf(Class<?> type, @Nullable Object obj, String message) {
-    notNull(type, "Type to check against must not be null");
-    if (!type.isInstance(obj)) {
-      instanceCheckFailed(type, obj, message);
-    }
-  }
-
-  private static void instanceCheckFailed(Class<?> type, @Nullable Object obj, @Nullable String msg) {
-    String className = (obj != null ? obj.getClass().getName() : "null");
-    String result = "";
-    boolean defaultMessage = true;
-    if (StringUtils.hasLength(msg)) {
-      if (endsWithSeparator(msg)) {
-        result = msg + " ";
-      } else {
-        result = messageWithTypeName(msg, className);
-        defaultMessage = false;
-      }
-    }
-    if (defaultMessage) {
-      result = result + ("Object of class [" + className + "] must be an instance of " + type);
-    }
-    throw new IllegalArgumentException(result);
-  }
-
-  private static boolean endsWithSeparator(String msg) {
-    return (msg.endsWith(":") || msg.endsWith(";") || msg.endsWith(",") || msg.endsWith("."));
-  }
-
-  private static String messageWithTypeName(String msg, @Nullable Object typeName) {
-    return msg + (msg.endsWith(" ") ? "" : ": ") + typeName;
-  }
-
   @Nullable
   private static String nullSafeGet(@Nullable Supplier<String> messageSupplier) {
     return (messageSupplier != null ? messageSupplier.get() : null);
   }
-
 }
