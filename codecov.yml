@@ -27,4 +27,28 @@ comment:
   
 ignore:
 #generated
+  - "src/main/java/org/springframework/core/BridgeMethodResolver.java"
+  - "src/main/java/org/springframework/core/DecoratingProxy.java"
+  - "src/main/java/org/springframework/core/KotlinDetector.java"
+  - "src/main/java/org/springframework/core/MethodParameter.java"
+  - "src/main/java/org/springframework/core/NestedExceptionUtils.java"
+  - "src/main/java/org/springframework/core/NestedRuntimeException.java"
+  - "src/main/java/org/springframework/core/OrderComparator.java"
+  - "src/main/java/org/springframework/core/Ordered.java"
+  - "src/main/java/org/springframework/core/ParameterNameDiscoverer.java"
+  - "src/main/java/org/springframework/core/PriorityOrdered.java"
+  - "src/main/java/org/springframework/core/ResolvableType.java"
+  - "src/main/java/org/springframework/core/ResolvableTypeProvider.java"
+  - "src/main/java/org/springframework/core/SerializableTypeWrapper.java"
+  - "src/main/java/org/springframework/lang/NonNullApi.java"
+  - "src/main/java/org/springframework/lang/NonNullFields.java"
+  - "src/main/java/org/springframework/lang/Nullable.java"
+  - "src/main/java/org/springframework/util/Assert.java"
+  - "src/main/java/org/springframework/util/ClassUtils.java"
+  - "src/main/java/org/springframework/util/ConcurrentReferenceHashMap.java"
+  - "src/main/java/org/springframework/util/LinkedMultiValueMap.java"
+  - "src/main/java/org/springframework/util/MultiValueMap.java"
+  - "src/main/java/org/springframework/util/ObjectUtils.java"
+  - "src/main/java/org/springframework/util/ReflectionUtils.java"
+  - "src/main/java/org/springframework/util/StringUtils.java"
 #end

@@ -7,4 +7,5 @@
  * (e.g. FindBugs or Animal Sniffer), alternative JVM languages (e.g. Kotlin), as well as IDEs
  * (e.g. IntelliJ IDEA or Eclipse with corresponding project setup).
  */
+@xdean.codecov.CodecovIgnore
 package org.springframework.lang;
