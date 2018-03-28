@@ -14,7 +14,6 @@
 
 package org.springframework.util;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,18 +43,19 @@ import org.springframework.lang.Nullable;
  */
 public abstract class ReflectionUtils {
 
-  /**
-   * Naming prefix for CGLIB-renamed methods.
-   *
-   * @see #isCglibRenamedMethod
-   */
   private static final Method[] NO_METHODS = {};
+
+  private static final Field[] NO_FIELDS = {};
 
   /**
    * Cache for {@link Class#getDeclaredMethods()} plus equivalent default methods from Java 8 based
    * interfaces, allowing for fast iteration.
    */
   private static final Map<Class<?>, Method[]> declaredMethodsCache = new ConcurrentReferenceHashMap<>(256);
+  /**
+   * Cache for {@link Class#getDeclaredFields()}, allowing for fast iteration.
+   */
+  private static final Map<Class<?>, Field[]> declaredFieldsCache = new ConcurrentReferenceHashMap<>(256);
 
   /**
    * Attempt to find a {@link Method} on the supplied class with the supplied name and no
@@ -363,6 +363,75 @@ public abstract class ReflectionUtils {
   }
 
   /**
+   * Make the given method accessible, explicitly setting it accessible if necessary. The
+   * {@code setAccessible(true)} method is only called when actually necessary, to avoid unnecessary
+   * conflicts with a JVM SecurityManager (if active).
+   *
+   * @param method the method to make accessible
+   * @see java.lang.reflect.Method#setAccessible
+   */
+  public static void makeAccessible(Method method) {
+    if ((!Modifier.isPublic(method.getModifiers()) ||
+        !Modifier.isPublic(method.getDeclaringClass().getModifiers())) && !method.isAccessible()) {
+      method.setAccessible(true);
+    }
+  }
+
+  /**
+   * Determine whether the given method is an "equals" method.
+   *
+   * @see java.lang.Object#equals(Object)
+   */
+  public static boolean isEqualsMethod(@Nullable Method method) {
+    if (method == null || !method.getName().equals("equals")) {
+      return false;
+    }
+    Class<?>[] paramTypes = method.getParameterTypes();
+    return (paramTypes.length == 1 && paramTypes[0] == Object.class);
+  }
+
+  /****************************** For Test ****************************/
+  /**
+   * Attempt to find a {@link Field field} on the supplied {@link Class} with the supplied
+   * {@code name}. Searches all superclasses up to {@link Object}.
+   *
+   * @param clazz the class to introspect
+   * @param name the name of the field
+   * @return the corresponding Field object, or {@code null} if not found
+   */
+  @Nullable
+  public static Field findField(Class<?> clazz, String name) {
+    return findField(clazz, name, null);
+  }
+
+  /**
+   * Attempt to find a {@link Field field} on the supplied {@link Class} with the supplied
+   * {@code name} and/or {@link Class type}. Searches all superclasses up to {@link Object}.
+   *
+   * @param clazz the class to introspect
+   * @param name the name of the field (may be {@code null} if type is specified)
+   * @param type the type of the field (may be {@code null} if name is specified)
+   * @return the corresponding Field object, or {@code null} if not found
+   */
+  @Nullable
+  public static Field findField(Class<?> clazz, @Nullable String name, @Nullable Class<?> type) {
+    Assert.notNull(clazz, "Class must not be null");
+    Assert.isTrue(name != null || type != null, "Either name or type of the field must be specified");
+    Class<?> searchType = clazz;
+    while (Object.class != searchType && searchType != null) {
+      Field[] fields = getDeclaredFields(searchType);
+      for (Field field : fields) {
+        if ((name == null || name.equals(field.getName())) &&
+            (type == null || type.equals(field.getType()))) {
+          return field;
+        }
+      }
+      searchType = searchType.getSuperclass();
+    }
+    return null;
+  }
+
+  /**
    * Make the given field accessible, explicitly setting it accessible if necessary. The
    * {@code setAccessible(true)} method is only called when actually necessary, to avoid unnecessary
    * conflicts with a JVM SecurityManager (if active).
@@ -379,45 +448,48 @@ public abstract class ReflectionUtils {
   }
 
   /**
-   * Make the given method accessible, explicitly setting it accessible if necessary. The
-   * {@code setAccessible(true)} method is only called when actually necessary, to avoid unnecessary
-   * conflicts with a JVM SecurityManager (if active).
+   * Get the field represented by the supplied {@link Field field object} on the specified
+   * {@link Object target object}. In accordance with {@link Field#get(Object)} semantics, the
+   * returned value is automatically wrapped if the underlying field has a primitive type.
+   * <p>
+   * Thrown exceptions are handled via a call to {@link #handleReflectionException(Exception)}.
    *
-   * @param method the method to make accessible
-   * @see java.lang.reflect.Method#setAccessible
+   * @param field the field to get
+   * @param target the target object from which to get the field
+   * @return the field's current value
    */
-  public static void makeAccessible(Method method) {
-    if ((!Modifier.isPublic(method.getModifiers()) ||
-        !Modifier.isPublic(method.getDeclaringClass().getModifiers())) && !method.isAccessible()) {
-      method.setAccessible(true);
+  @Nullable
+  public static Object getField(Field field, @Nullable Object target) {
+    try {
+      return field.get(target);
+    } catch (IllegalAccessException ex) {
+      handleReflectionException(ex);
+      throw new IllegalStateException(
+          "Unexpected reflection exception - " + ex.getClass().getName() + ": " + ex.getMessage());
     }
   }
 
   /**
-   * Make the given constructor accessible, explicitly setting it accessible if necessary. The
-   * {@code setAccessible(true)} method is only called when actually necessary, to avoid unnecessary
-   * conflicts with a JVM SecurityManager (if active).
+   * This variant retrieves {@link Class#getDeclaredFields()} from a local cache in order to avoid
+   * the JVM's SecurityManager check and defensive array copying.
    *
-   * @param ctor the constructor to make accessible
-   * @see java.lang.reflect.Constructor#setAccessible
+   * @param clazz the class to introspect
+   * @return the cached array of fields
+   * @throws IllegalStateException if introspection fails
+   * @see Class#getDeclaredFields()
    */
-  public static void makeAccessible(Constructor<?> ctor) {
-    if ((!Modifier.isPublic(ctor.getModifiers()) ||
-        !Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) && !ctor.isAccessible()) {
-      ctor.setAccessible(true);
+  private static Field[] getDeclaredFields(Class<?> clazz) {
+    Assert.notNull(clazz, "Class must not be null");
+    Field[] result = declaredFieldsCache.get(clazz);
+    if (result == null) {
+      try {
+        result = clazz.getDeclaredFields();
+        declaredFieldsCache.put(clazz, (result.length == 0 ? NO_FIELDS : result));
+      } catch (Throwable ex) {
+        throw new IllegalStateException("Failed to introspect Class [" + clazz.getName() +
+            "] from ClassLoader [" + clazz.getClassLoader() + "]", ex);
+      }
     }
-  }
-
-  /**
-   * Determine whether the given method is an "equals" method.
-   *
-   * @see java.lang.Object#equals(Object)
-   */
-  public static boolean isEqualsMethod(@Nullable Method method) {
-    if (method == null || !method.getName().equals("equals")) {
-      return false;
-    }
-    Class<?>[] paramTypes = method.getParameterTypes();
-    return (paramTypes.length == 1 && paramTypes[0] == Object.class);
+    return result;
   }
 }

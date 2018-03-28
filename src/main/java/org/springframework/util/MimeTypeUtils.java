@@ -15,14 +15,8 @@
 package org.springframework.util;
 
 import java.nio.charset.UnsupportedCharsetException;
-import java.security.SecureRandom;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import org.springframework.util.MimeType.SpecificityComparator;
 
 /**
  * Miscellaneous {@link MimeType} utility methods.
@@ -32,20 +26,6 @@ import org.springframework.util.MimeType.SpecificityComparator;
  * @since 4.0
  */
 public abstract class MimeTypeUtils {
-
-  private static final byte[] BOUNDARY_CHARS = new byte[] { '-', '_', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b',
-      'c', 'd', 'e', 'f', 'g',
-      'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
-      'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-      'V', 'W', 'X', 'Y', 'Z' };
-
-  private static final Random RND = new SecureRandom();
-
-  /**
-   * Comparator used by {@link #sortBySpecificity(List)}.
-   */
-  public static final Comparator<MimeType> SPECIFICITY_COMPARATOR = new SpecificityComparator<>();
-
   /**
    * Public constant mime type that includes all media ranges (i.e. "&#42;/&#42;").
    */
@@ -232,16 +212,4 @@ public abstract class MimeTypeUtils {
       throw new InvalidMimeTypeException(mimeType, ex.getMessage());
     }
   }
-
-  /**
-   * Generate a random MIME boundary as bytes, often used in multipart mime types.
-   */
-  public static byte[] generateMultipartBoundary() {
-    byte[] boundary = new byte[RND.nextInt(11) + 30];
-    for (int i = 0; i < boundary.length; i++) {
-      boundary[i] = BOUNDARY_CHARS[RND.nextInt(BOUNDARY_CHARS.length)];
-    }
-    return boundary;
-  }
-
 }

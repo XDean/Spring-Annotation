@@ -190,24 +190,6 @@ public abstract class Assert {
   }
 
   /**
-   * Assert that an array contains elements; that is, it must not be {@code null} and must contain
-   * at least one element.
-   *
-   * <pre class="code">
-   * Assert.notEmpty(array, "The array must contain elements");
-   * </pre>
-   *
-   * @param array the array to check
-   * @param message the exception message to use if the assertion fails
-   * @throws IllegalArgumentException if the object array is {@code null} or contains no elements
-   */
-  public static void notEmpty(@Nullable Object[] array, String message) {
-    if (ObjectUtils.isEmpty(array)) {
-      throw new IllegalArgumentException(message);
-    }
-  }
-
-  /**
    * Assert that the provided object is an instance of the provided class.
    *
    * <pre class="code">

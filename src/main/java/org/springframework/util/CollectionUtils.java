@@ -14,7 +14,6 @@
 
 package org.springframework.util;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.lang.Nullable;
@@ -28,17 +27,6 @@ import org.springframework.lang.Nullable;
  * @since 1.1.3
  */
 public abstract class CollectionUtils {
-
-  /**
-   * Return {@code true} if the supplied Collection is {@code null} or empty. Otherwise, return
-   * {@code false}.
-   *
-   * @param collection the Collection to check
-   * @return whether the given Collection is empty
-   */
-  public static boolean isEmpty(@Nullable Collection<?> collection) {
-    return (collection == null || collection.isEmpty());
-  }
 
   /**
    * Return {@code true} if the supplied Map is {@code null} or empty. Otherwise, return
