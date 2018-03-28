@@ -5,7 +5,7 @@
 
 Spring core support for annotations, meta-annotations, and composed annotations with attribute overrides
 
-#Motivation
+# Motivation
 
 Spring's meta-annotations and composed annotations are very easy to use.
  
@@ -13,7 +13,7 @@ But in some cases we only need the annotation toolkit but not the whole spring-c
 
 Here comes this project. A minimized spring annotation toolkit (<15KB).
 
-#Get it
+# Get it
 
 ```xml
 <dependency>
@@ -23,7 +23,7 @@ Here comes this project. A minimized spring annotation toolkit (<15KB).
 </dependency>
 ```
 
-#License
+# License
 
 [Apache license 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 

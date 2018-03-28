@@ -61,6 +61,11 @@
 
 	<developers>
 		<developer>
+			<id>jhoeller</id>
+			<name>Juergen Hoeller</name>
+			<email>jhoeller@pivotal.io</email>
+		</developer>
+		<developer>
 			<name>XDean</name>
 			<email>373216024@qq.com</email>
 			<url>https://github.com/XDean</url>
