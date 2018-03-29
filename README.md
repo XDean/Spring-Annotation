@@ -11,7 +11,7 @@ Spring's meta-annotations and composed annotations are very easy to use.
  
 But in some cases we only need the annotation toolkit but not the whole spring-core(>1MB). 
 
-Here comes this project. A minimized spring annotation toolkit (<15KB).
+Here comes this project. A minimized spring annotation toolkit (<150KB) with minimize dependencies.
 
 # Get it
 

@@ -182,6 +182,7 @@
 							</execution>
 						</executions>
 						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
 							<tags>
 								<tag>
 									<name>apiNote</name>
